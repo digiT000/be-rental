@@ -1,0 +1,13 @@
+/**
+ * Async handler wrapper to catch errors in async route handlers
+ * @param {Function} fn - Async function to wrap
+ * @returns {Function} Express middleware function
+ */
+
+function asyncHandler(fn) {
+  return (req, res, next) => {
+    return Promise.resolve(fn(req, res, next)).catch(next);
+  };
+}
+
+export default asyncHandler;
