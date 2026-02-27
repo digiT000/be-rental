@@ -68,15 +68,8 @@ export default class AuthService {
 
   async refreshAccessToken(refreshToken) {
     try {
-      const decodedToken = jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET_KEY
-      );
-
-      const user = await this.userModel.verifyRefreshToken(
-        decodedToken.id,
-        refreshToken
-      );
+      const user = await this.userModel.verifyRefreshToken(refreshToken);
+      console.log({ user });
 
       if (!user) {
         throw new UnauthorizedError("Invalid refresh token");

@@ -216,14 +216,18 @@ describe("UserModel", () => {
         email: "john@example.com",
         name: "John Doe",
         refresh_token: "token123",
-        refresh_token_valid_until: new Date("2025-12-31"),
+        valid_until: new Date("2025-12-31"),
         revoked: false,
       };
 
       mockQuery.mockResolvedValue({ rows: [mockUser] });
 
-      const result = await userModel.verifyRefreshToken(1, "token123");
+      const result = await userModel.verifyRefreshToken("token123");
 
+      expect(mockQuery).toHaveBeenCalledWith(
+        expect.stringContaining("FROM user_token"),
+        ["token123"]
+      );
       expect(result).toEqual(mockUser);
     });
 
