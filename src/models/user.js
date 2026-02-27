@@ -70,7 +70,6 @@ export class UserModel {
         AND refresh_token = $2
         `;
       const result = await db.query(query, [userId, token, revokedReason]);
-      console.log({ result });
       return result;
     } catch (error) {
       throw error;

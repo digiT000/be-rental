@@ -1,7 +1,5 @@
 import { Pool } from "pg";
 
-console.log(process.env.PG_SUPABASE_URL);
-
 if (!process.env.PG_SUPABASE_URL) {
   throw new Error("PG_SUPABASE_URL environment variable is not set");
 }
