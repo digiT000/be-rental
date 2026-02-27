@@ -1,5 +1,4 @@
 import db from "../config/postgres.js";
-import crypto from "crypto";
 
 export class UserModel {
   async create(name, email, hashedPassword) {
