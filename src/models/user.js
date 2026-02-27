@@ -47,9 +47,9 @@ export class UserModel {
   async saveRefreshToken(userId, refreshToken, validUntil, deviceInfo = "") {
     try {
       const query = `
-      INSERT INTO user_token (refresh_token, user_id, valid_until, is_revoked, device_info)
+      INSERT INTO user_token (refresh_token, user_id, valid_until, revoked, device_info)
       VALUES ($1, $2, $3, $4, $5)
-      RETURNING refresh_token, user_id, valid_until, is_revoked, created_at
+      RETURNING refresh_token, user_id, valid_until, revoked, created_at
     `;
       const values = [refreshToken, userId, validUntil, false, deviceInfo];
       const result = await db.query(query, values);
@@ -59,10 +59,28 @@ export class UserModel {
     }
   }
 
+  async userRevoke(userId, token, revokedReason) {
+    try {
+      const query = `
+        UPDATE user_token
+        SET revoked = true,
+            revoked_at = NOW(),
+            revoked_reason = $3
+        WHERE user_id = $1
+        AND refresh_token = $2
+        `;
+      const result = await db.query(query, [userId, token, revokedReason]);
+      console.log({ result });
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async verifyRefreshToken(userId, refreshToken) {
     try {
       const query = `
-          SELECT id, email, name, refresh_token, refresh_token_valid_until
+          SELECT id, email, name, refresh_token, refresh_token_valid_until, revoked
           FROM users
           WHERE id = $1 AND refresh_token = $2
         `;

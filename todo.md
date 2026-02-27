@@ -10,7 +10,7 @@
   - [x] Save user to database
   - [x] Return success response
 
-- [ ] Login endpoint
+- [x] Login endpoint
 
   - [x] Validation for email and password
   - [x] Find user by email

@@ -5,7 +5,10 @@ import {
   authRegisterValidator,
   authLoginValidator,
 } from "../middleware/validation/auth.validator.js";
-import { refreshTokenAuthorization } from "../middleware/auth.middleware.js";
+import {
+  authorizationMiddlware,
+  refreshTokenAuthorization,
+} from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 const authControllerInstance = new AuthController();
@@ -29,6 +32,12 @@ router.get(
   asyncHandler(
     authControllerInstance.getNewAccessToken.bind(authControllerInstance)
   )
+);
+router.put(
+  "/logout",
+  asyncHandler(refreshTokenAuthorization),
+  asyncHandler(authorizationMiddlware),
+  asyncHandler(authControllerInstance.logout.bind(authControllerInstance))
 );
 
 export default router;

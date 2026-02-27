@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { UnauthorizedError } from "../utils/appError.js";
 import { UserModel } from "../models/user.js";
+import { LOGOUT_REASON } from "../utils/constant.js";
 
 export default class AuthService {
   userModel;
@@ -81,6 +82,12 @@ export default class AuthService {
         throw new UnauthorizedError("Invalid refresh token");
       }
 
+      if (user.revoked) {
+        throw new UnauthorizedError(
+          "Your access already revoke, please login again"
+        );
+      }
+
       // Check if token is expired
       const now = new Date();
       const validUntil = new Date(user.refresh_token_valid_until);
@@ -92,6 +99,18 @@ export default class AuthService {
       const accessToken = this.getAccessToken(user);
 
       return accessToken;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async userLogout(userId, refreshToken) {
+    try {
+      return await this.userModel.userRevoke(
+        userId,
+        refreshToken,
+        LOGOUT_REASON.logout
+      );
     } catch (error) {
       throw error;
     }

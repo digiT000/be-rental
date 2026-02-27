@@ -72,5 +72,34 @@ export default class AuthController {
     }
   }
 
-  // Get Token
+  async logout(req, res, next) {
+    try {
+      const refreshToken = req.refreshToken;
+      const user = req.user;
+
+      if (!refreshToken) {
+        throw new UnauthorizedError(
+          "Refresh token not found. Please login again"
+        );
+      }
+
+      await this.authService.userLogout(user.id, refreshToken);
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "Strict",
+      });
+
+      return res.status(200).json({
+        message: "User logout",
+      });
+    } catch (error) {
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "Strict",
+      });
+      throw error;
+    }
+  }
 }
