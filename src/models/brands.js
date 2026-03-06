@@ -1,10 +1,10 @@
 import db from "../config/postgres.js";
 
-class Brands {
+export class BrandsModel {
   async create(brand) {
     const query = `
      INSERT INTO brands (name,logo_url )
-     VALUES ($1, $2, $3)
+     VALUES ($1, $2)
      RETURNING id, name, logo_url
     `;
 

@@ -2,6 +2,10 @@ import express from "express";
 import asyncHandler from "../utils/asyncHandler.js";
 import BrandController from "./../controller/brand.controller.js";
 import { authorizationMiddlware } from "../middleware/auth.middleware.js";
+import {
+  brandRequestValidator,
+  createBrandValidator,
+} from "../middleware/validation/brand.validator.js";
 
 const router = express.Router();
 const brandControllerInstance = new BrandController();
@@ -11,6 +15,15 @@ router.get(
   authorizationMiddlware("admin"),
   asyncHandler(
     brandControllerInstance.requestBrandImageUrl.bind(brandControllerInstance)
+  )
+);
+router.post(
+  "/",
+  authorizationMiddlware("admin"),
+  createBrandValidator,
+  brandRequestValidator,
+  asyncHandler(
+    brandControllerInstance.createBrand.bind(brandControllerInstance)
   )
 );
 
