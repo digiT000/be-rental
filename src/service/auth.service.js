@@ -12,11 +12,16 @@ export default class AuthService {
     this.userModel = new UserModel();
   }
 
-  async createUser(name, email, password) {
+  async createUser(name, email, password, role) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
-      const result = await this.userModel.create(name, email, hashedPassword);
+      const result = await this.userModel.create(
+        name,
+        email,
+        hashedPassword,
+        role
+      );
       return result;
     } catch (error) {
       if (error.code === "23505") {
@@ -115,6 +120,7 @@ export default class AuthService {
       {
         id: user.id,
         email: user.email,
+        role: user.role,
       },
       process.env.ACCESS_TOKEN_SECRET_KEY,
       {

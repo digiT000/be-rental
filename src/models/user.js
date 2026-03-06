@@ -1,12 +1,12 @@
 import db from "../config/postgres.js";
 
 export class UserModel {
-  async create(name, email, hashedPassword) {
-    const values = [name, email, hashedPassword];
+  async create(name, email, hashedPassword, role = "user") {
+    const values = [name, email, hashedPassword, role];
 
     const query = `
-          INSERT INTO users (name, email, password)
-          VALUES ($1, $2, $3)
+          INSERT INTO users (name, email, password, role)
+          VALUES ($1, $2, $3, $4)
           RETURNING id, name, email, created_at, updated_at
         `;
     const result = await db.query(query, values);

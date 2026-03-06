@@ -29,12 +29,13 @@ export default class AuthController {
   // Register
 
   async register(req, res, next) {
-    const { name, email, password } = req.body;
+    const { name, email, password, intenalRoleOnly = "user" } = req.body;
 
     const createdUser = await this.authService.createUser(
       name,
       email,
-      password
+      password,
+      intenalRoleOnly
     );
 
     return res.status(201).json({

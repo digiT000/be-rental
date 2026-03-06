@@ -5,6 +5,7 @@ import "dotenv/config";
 
 import db from "./config/postgres.js";
 import authRouter from "./router/auth.router.js";
+import brandRounter from "./router/brand.router.js";
 import handleError from "./utils/handleError.js";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -32,6 +33,7 @@ db.query("SELECT NOW()")
 
 // Auth
 app.use("/api/auth", authRouter);
+app.use("/api/brand", brandRounter);
 
 // Error Handler
 
