@@ -1,22 +1,23 @@
-import AuthService from "../service/auth.service.js";
-import { UnauthorizedError } from "../utils/appError.js";
+import { Request, Response } from 'express';
+import AuthService from '../service/auth.service.js';
+import { UnauthorizedError } from '../utils/appError.js';
 
 export default class AuthController {
-  authService;
+  private authService: AuthService;
 
   constructor() {
     this.authService = new AuthService();
   }
 
-  async login(req, res, next) {
+  login = async (req: Request, res: Response): Promise<Response> => {
     const { email, password } = req.body;
 
     const user = await this.authService.userLogin(email, password);
 
-    res.cookie("refreshToken", user.refreshToken, {
+    res.cookie('refreshToken', user.refreshToken, {
       httpOnly: true, // Prevents JavaScript from accessing the cookie (XSS protection)
       secure: true, // Ensures the cookie is only sent over HTTPS
-      sameSite: "Strict", // Helps protect against CSRF attacks
+      sameSite: 'strict', // Helps protect against CSRF attacks
       maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
     });
 
@@ -24,12 +25,10 @@ export default class AuthController {
       ...user,
       refreshToken: null,
     });
-  }
+  };
 
-  // Register
-
-  async register(req, res, next) {
-    const { name, email, password, intenalRoleOnly = "user" } = req.body;
+  register = async (req: Request, res: Response): Promise<Response> => {
+    const { name, email, password, intenalRoleOnly = 'user' } = req.body;
 
     const createdUser = await this.authService.createUser(
       name,
@@ -44,63 +43,63 @@ export default class AuthController {
         name,
         email,
       },
-      message: "User created ",
+      message: 'User created ',
     });
-  }
+  };
 
-  async getNewAccessToken(req, res, next) {
+  getNewAccessToken = async (req: Request, res: Response): Promise<Response> => {
     const token = req.refreshToken;
 
     if (!token) {
-      throw new UnauthorizedError(
-        "Refresh token not found. Please login again"
-      );
+      throw new UnauthorizedError('Refresh token not found. Please login again');
     }
 
     try {
       const newToken = await this.authService.refreshAccessToken(token);
 
-      res.status(200).send({
+      return res.status(200).send({
         token: newToken,
       });
     } catch (error) {
-      res.clearCookie("refreshToken", {
+      res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
-        sameSite: "Strict",
+        sameSite: 'strict',
       });
       throw error;
     }
-  }
+  };
 
-  async logout(req, res, next) {
+  logout = async (req: Request, res: Response): Promise<Response> => {
     try {
       const refreshToken = req.refreshToken;
       const user = req.user;
 
       if (!refreshToken) {
-        throw new UnauthorizedError(
-          "Refresh token not found. Please login again"
-        );
+        throw new UnauthorizedError('Refresh token not found. Please login again');
+      }
+
+      if (!user) {
+        throw new UnauthorizedError('User not found. Please login again');
       }
 
       await this.authService.userLogout(user.id, refreshToken);
-      res.clearCookie("refreshToken", {
+      res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
-        sameSite: "Strict",
+        sameSite: 'strict',
       });
 
       return res.status(200).json({
-        message: "User logout",
+        message: 'User logout',
       });
     } catch (error) {
-      res.clearCookie("refreshToken", {
+      res.clearCookie('refreshToken', {
         httpOnly: true,
         secure: true,
-        sameSite: "Strict",
+        sameSite: 'strict',
       });
       throw error;
     }
-  }
+  };
 }

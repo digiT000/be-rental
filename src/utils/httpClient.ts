@@ -1,11 +1,13 @@
-import axios from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export default class HttpClient {
-  constructor(baseURL, headers = {}) {
+  private client: AxiosInstance;
+
+  constructor(baseURL: string, headers: Record<string, string> = {}) {
     this.client = axios.create({
       baseURL,
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         ...headers,
       },
       timeout: 10000,
@@ -24,7 +26,7 @@ export default class HttpClient {
 
     // Response interceptor
     this.client.interceptors.response.use(
-      (response) => response.data,
+      (response: AxiosResponse) => response.data,
       (error) => {
         const errorMessage = error.response?.data?.message || error.message;
         console.log(errorMessage);
@@ -33,19 +35,19 @@ export default class HttpClient {
     );
   }
 
-  async get(url, config = {}) {
+  async get<T = any>(url: string, config: AxiosRequestConfig = {}): Promise<T> {
     return this.client.get(url, config);
   }
 
-  async post(url, data, config = {}) {
+  async post<T = any>(url: string, data?: any, config: AxiosRequestConfig = {}): Promise<T> {
     return this.client.post(url, data, config);
   }
 
-  async put(url, data, config = {}) {
+  async put<T = any>(url: string, data?: any, config: AxiosRequestConfig = {}): Promise<T> {
     return this.client.put(url, data, config);
   }
 
-  async delete(url, config = {}) {
+  async delete<T = any>(url: string, config: AxiosRequestConfig = {}): Promise<T> {
     return this.client.delete(url, config);
   }
 }
