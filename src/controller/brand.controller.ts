@@ -3,6 +3,7 @@ import { BrandService } from "../service/brand.service.js";
 import CloudflareService from "../service/thirdparty/cloudflare.service.js";
 import type { UUID } from "node:crypto";
 import { OptionPagination } from "../types/express.js";
+import { CreateBrandRequest, UpdateBrandRequest } from "../dto/brand";
 
 export default class BrandController {
   private cloudflareService: CloudflareService;
@@ -14,13 +15,16 @@ export default class BrandController {
   }
 
   createBrand = async (req: Request, res: Response): Promise<Response> => {
-    const brand = await this.brandService.create(req.body);
+    const brandRequest = req.body as CreateBrandRequest;
+    const brand = await this.brandService.create(brandRequest);
 
     return res.status(200).send(brand);
   };
 
   async updateBrand(req: Request, res: Response): Promise<Response> {
-    const brand = await this.brandService.update(req.body);
+    const updateRequest = req.body as UpdateBrandRequest;
+
+    const brand = await this.brandService.update(updateRequest);
 
     return res.status(200).send(brand);
   }
@@ -35,10 +39,7 @@ export default class BrandController {
 
   async getBrandById(req: Request, res: Response): Promise<Response> {
     const brandId = req.params.id;
-    console.log(brandId);
     const brand = await this.brandService.getBrandById(brandId as UUID);
-
-    console.log({ brand });
 
     return res.status(200).json(brand);
   }
