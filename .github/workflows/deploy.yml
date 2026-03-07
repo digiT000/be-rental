@@ -22,6 +22,6 @@ jobs:
             git config --global --add safe.directory /opt/myapp/be-rental
             cd /opt/myapp/be-rental
             git pull origin main
-            npm install --production
+            npm install
             npm run build
             pm2 restart all
