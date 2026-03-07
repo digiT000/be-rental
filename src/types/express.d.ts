@@ -1,13 +1,13 @@
-import { JwtPayload } from 'jsonwebtoken';
+import { JwtPayload } from "jsonwebtoken";
 
 declare global {
   namespace Express {
     interface Request {
       user?: {
-        id: number;
+        id: string;
         email: string;
         name: string;
-        role: 'user' | 'admin' | 'super_admin';
+        role: "user" | "admin" | "super_admin";
       };
       refreshToken?: string;
     }
@@ -15,8 +15,13 @@ declare global {
 }
 
 export interface AuthJwtPayload extends JwtPayload {
-  id: number;
+  id: string;
   email: string;
   name: string;
-  role: 'user' | 'admin' | 'super_admin';
+  role: "user" | "admin" | "super_admin";
+}
+
+export interface OptionPagination {
+  page: number;
+  limit: number;
 }

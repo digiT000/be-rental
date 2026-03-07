@@ -5,16 +5,14 @@ import { UnauthorizedError } from '../utils/appError.js';
 import { UserModel } from '../models/user.js';
 import { LOGOUT_REASON } from '../types/constants.js';
 import { env } from '../config/env.js';
-import { User } from '../types/database.types.js';
+import { UserResponseDTO, toUserResponse } from '../dto/auth/index.js';
 
-interface UserResponse {
-  id: number;
-  name: string;
-  email: string;
-}
-
-interface LoginResponse {
-  user: UserResponse;
+/**
+ * Internal response type for login (includes refreshToken)
+ * Different from LoginResponseDTO which excludes refreshToken
+ */
+interface InternalLoginResponse {
+  user: UserResponseDTO;
   refreshToken: string;
   accessToken: string;
 }
@@ -31,12 +29,12 @@ export default class AuthService {
     email: string,
     password: string,
     role: 'user' | 'admin' | 'super_admin' = 'user'
-  ): Promise<Omit<User, 'password'>> {
+  ): Promise<UserResponseDTO> {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
       const result = await this.userModel.create(name, email, hashedPassword, role);
-      return result;
+      return toUserResponse(result);
     } catch (error: any) {
       if (error.code === '23505') {
         throw new UnauthorizedError('User already exist with this email');
@@ -45,7 +43,7 @@ export default class AuthService {
     }
   }
 
-  async userLogin(email: string, password: string): Promise<LoginResponse> {
+  async userLogin(email: string, password: string): Promise<InternalLoginResponse> {
     const user = await this.userModel.findUserByEmail(email);
 
     if (!user) {
@@ -66,12 +64,11 @@ export default class AuthService {
 
     const accessToken = this.getAccessToken(user);
 
+    // Convert user to DTO, excluding password
+    const userDto = toUserResponse(user);
+
     return {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      },
+      user: userDto,
       refreshToken,
       accessToken,
     };
@@ -102,11 +99,11 @@ export default class AuthService {
     return accessToken;
   }
 
-  async userLogout(userId: number, refreshToken: string): Promise<void> {
+  async userLogout(userId: string, refreshToken: string): Promise<void> {
     return await this.userModel.userRevoke(userId, refreshToken, LOGOUT_REASON.USER_LOGOUT);
   }
 
-  getAccessToken(user: { id: number; email: string; role?: string }): string {
+  getAccessToken(user: { id: string; email: string; role?: string }): string {
     const accessToken = jwt.sign(
       {
         id: user.id,

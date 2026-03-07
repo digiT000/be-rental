@@ -30,7 +30,7 @@ export class UserModel {
       .executeTakeFirst();
   }
 
-  async findUserById(userId: number): Promise<User | undefined> {
+  async findUserById(userId: string): Promise<User | undefined> {
     return await db
       .selectFrom('users')
       .selectAll()
@@ -39,7 +39,7 @@ export class UserModel {
   }
 
   async saveRefreshToken(
-    userId: number,
+    userId: string,
     refreshToken: string,
     validUntil: Date,
     deviceInfo: string = ''
@@ -59,7 +59,7 @@ export class UserModel {
     return result;
   }
 
-  async userRevoke(userId: number, token: string, revokedReason: string): Promise<void> {
+  async userRevoke(userId: string, token: string, revokedReason: string): Promise<void> {
     await db
       .updateTable('user_token')
       .set({
@@ -76,7 +76,7 @@ export class UserModel {
     refreshToken: string
   ): Promise<
     | {
-        id: number;
+        id: string;
         email: string;
         name: string;
         refresh_token: string;

@@ -1,7 +1,7 @@
-import { Pool } from 'pg';
-import { Kysely, PostgresDialect } from 'kysely';
-import { Database } from '../types/database.types.js';
-import { env } from './env.js';
+import { Pool } from "pg";
+import { Kysely, PostgresDialect } from "kysely";
+import { Database } from "../types/database.types.js";
+import { env } from "./env.js";
 
 const pool = new Pool({
   connectionString: env.PG_SUPABASE_URL,
@@ -15,45 +15,48 @@ const pool = new Pool({
 });
 
 // Create Kysely instance for type-safe queries
-export const db = new Kysely<Database>({
+const db = new Kysely<Database>({
   dialect: new PostgresDialect({ pool }),
 });
 
 // Set up event listeners before any connections
-pool.on('connect', () => {
-  console.log('DB successfully connected');
+pool.on("connect", () => {
+  console.log("DB successfully connected");
 });
 
-pool.on('error', (err: Error) => {
-  console.error('Unexpected error on idle client', err);
+pool.on("error", (err: Error) => {
+  console.error("Unexpected error on idle client", err);
   // Don't exit the process - pg will handle reconnection
 });
 
 // Test connection immediately
 async function testConnection(): Promise<void> {
   try {
-    console.log('🔄 Testing database connection...');
-    console.log('Connection string:', env.PG_SUPABASE_URL ? '✅ Found' : '❌ Missing');
+    console.log("🔄 Testing database connection...");
+    console.log(
+      "Connection string:",
+      env.PG_SUPABASE_URL ? "✅ Found" : "❌ Missing"
+    );
 
     const client = await pool.connect();
-    console.log('✅ Client acquired from pool');
+    console.log("✅ Client acquired from pool");
 
-    const result = await client.query('SELECT NOW()');
-    console.log('✅ Query successful:', result.rows[0]);
+    const result = await client.query("SELECT NOW()");
+    console.log("✅ Query successful:", result.rows[0]);
 
     client.release();
-    console.log('✅ Client released back to pool');
+    console.log("✅ Client released back to pool");
   } catch (err) {
     const error = err as Error & { code?: string };
-    console.error('❌ Connection test failed:');
-    console.error('Error name:', error.name);
-    console.error('Error message:', error.message);
-    console.error('Error code:', error.code);
-    console.error('Full error:', error);
+    console.error("❌ Connection test failed:");
+    console.error("Error name:", error.name);
+    console.error("Error message:", error.message);
+    console.error("Error code:", error.code);
+    console.error("Full error:", error);
   }
 }
 
 testConnection();
 
 // Export pool for backward compatibility during migration
-export default pool;
+export { pool, db };

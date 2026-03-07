@@ -1,6 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import { body, validationResult, ValidationChain } from 'express-validator';
 
+/**
+ * Validation middleware for user registration
+ * Validates RegisterRequestDTO fields before they reach the controller
+ * 
+ * Fields validated:
+ * - name: Required, non-empty string
+ * - email: Required, valid email format
+ * - password: Required, minimum 8 characters
+ */
 const authRegisterValidator: (ValidationChain | typeof authRequest)[] = [
   body('name').notEmpty().trim().withMessage('Please input name'),
   body('email').isEmail().withMessage('Not a valid e-mail address'),
@@ -10,6 +19,14 @@ const authRegisterValidator: (ValidationChain | typeof authRequest)[] = [
   authRequest,
 ];
 
+/**
+ * Validation middleware for user login
+ * Validates LoginRequestDTO fields before they reach the controller
+ * 
+ * Fields validated:
+ * - email: Required, valid email format
+ * - password: Required, minimum 8 characters
+ */
 const authLoginValidator: (ValidationChain | typeof authRequest)[] = [
   body('email').isEmail().withMessage('Not a valid e-mail address'),
   body('password')

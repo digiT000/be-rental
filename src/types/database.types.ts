@@ -1,4 +1,4 @@
-import { Generated, Insertable, Selectable, Updateable } from 'kysely';
+import { Generated, Insertable, Selectable, Updateable } from "kysely";
 
 // Database table interfaces
 export interface Database {
@@ -9,19 +9,19 @@ export interface Database {
 }
 
 export interface UsersTable {
-  id: Generated<number>;
+  id: Generated<string>;
   name: string;
   email: string;
   password: string;
-  role: 'user' | 'admin' | 'super_admin';
+  role: "user" | "admin" | "super_admin";
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
 
 export interface UserTokenTable {
-  id: Generated<number>;
+  id: Generated<string>;
   refresh_token: string;
-  user_id: number;
+  user_id: string;
   valid_until: Date;
   revoked: boolean;
   revoked_at: Date | null;
@@ -31,17 +31,19 @@ export interface UserTokenTable {
 }
 
 export interface BrandsTable {
-  id: Generated<number>;
+  id: Generated<string>;
   name: string;
-  image: string | null;
+  logo_url: string | null;
+  is_deleted: boolean;
+  deleted_at: Generated<Date> | null;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
 
 export interface VehicleModelsTable {
-  id: Generated<number>;
+  id: Generated<string>;
   name: string;
-  brand_id: number;
+  brand_id: string;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
