@@ -3,7 +3,7 @@ import { BrandService } from "../service/brand.service.js";
 import CloudflareService from "../service/thirdparty/cloudflare.service.js";
 import type { UUID } from "node:crypto";
 import { OptionPagination } from "../types/express.js";
-import { CreateBrandRequest, UpdateBrandRequest } from "../dto/brand";
+import { CreateBrandRequest, UpdateBrandRequest } from "../dto/brand/index.js";
 
 export default class BrandController {
   private cloudflareService: CloudflareService;

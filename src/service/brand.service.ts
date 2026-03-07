@@ -7,7 +7,7 @@ import {
   BrandResponse,
   toBrandResponse,
   UpdateBrandRequest,
-} from "../dto/brand/";
+} from "../dto/brand/index.js";
 
 export class BrandService {
   private brandModel: BrandsModel;
