@@ -17,8 +17,8 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            cd /your/project/path        # ← change this
+            cd /opt/myapp/be-rental
             git pull origin main
             npm install --production
             npm run build
-            pm2 restart all   # ← change this
+            pm2 restart all
