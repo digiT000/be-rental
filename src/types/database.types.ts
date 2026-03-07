@@ -33,7 +33,7 @@ export interface UserTokenTable {
 export interface BrandsTable {
   id: Generated<string>;
   name: string;
-  logo_url: string | null;
+  logo_url: string;
   is_deleted: boolean;
   deleted_at: Generated<Date> | null;
   created_at: Generated<Date>;

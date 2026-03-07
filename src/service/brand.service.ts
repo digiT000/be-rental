@@ -19,7 +19,7 @@ export class BrandService {
   async create(brand: CreateBrandRequest): Promise<BrandResponse> {
     const logoUrl = brand.logoUrl
       ? `${env.BASE_CDN_URL_IMAGE}/${brand.logoUrl}`
-      : null;
+      : "";
     const result = await this.brandModel.create({ ...brand, logoUrl });
     return toBrandResponse(result);
   }
@@ -32,12 +32,12 @@ export class BrandService {
     return toBrandResponse(result);
   }
 
-  async getBrandById(id: UUID) {
-    console.log("SERVICES", { id });
-    return await this.brandModel.findById(id);
+  async getBrandById(id: UUID): Promise<BrandResponse> {
+    const result = await this.brandModel.findById(id);
+    return toBrandResponse(result);
   }
 
-  async getBrands(options: OptionPagination) {
+  async getBrands(options: OptionPagination): Promise<BrandResponse[]> {
     return await this.brandModel.get(options);
   }
 

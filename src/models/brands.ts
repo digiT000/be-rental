@@ -6,7 +6,7 @@ import { OptionPagination } from "../types/express.js";
 
 interface BrandInput {
   name: string;
-  logoUrl: string | null;
+  logoUrl: string;
 }
 
 interface BrandUpdateInput {
@@ -36,7 +36,7 @@ export class BrandsModel {
 
   async update(brand: BrandUpdateInput) {
     const id = brand.id as UUID;
-    const data: { name?: string; logo_url?: string | null } = {};
+    const data: { name?: string; logo_url?: string } = {};
 
     if (brand.name) {
       data.name = brand.name;
@@ -68,9 +68,7 @@ export class BrandsModel {
       .executeTakeFirstOrThrow();
   }
 
-  async findById(
-    id: UUID
-  ): Promise<Pick<Brand, "id" | "name" | "logo_url"> | undefined> {
+  async findById(id: UUID): Promise<Pick<Brand, "id" | "name" | "logo_url">> {
     const brandId = id as UUID;
     const result = await db
       .selectFrom("brands")
@@ -90,7 +88,7 @@ export class BrandsModel {
 
     return await db
       .selectFrom("brands")
-      .select(["id", "name", "logo_url"])
+      .select(["id", "name", "logo_url as logoUrl"])
       .limit(options.limit)
       .where("is_deleted", "=", false)
       .where("deleted_at", "is", null)
