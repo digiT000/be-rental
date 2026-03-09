@@ -1,8 +1,8 @@
 import {
   CreateVehicleModelRequest,
   UpdateVehicleModelRequest,
-} from "../dto/vehicleModel";
-import { VehicleModelService } from "../service/vehicle-model.service";
+} from "../dto/vehicleModel/index.js";
+import { VehicleModelService } from "../service/vehicle-model.service.js";
 import type { Request, Response } from "express";
 
 export class VehicleModelController {

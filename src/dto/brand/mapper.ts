@@ -1,5 +1,5 @@
-import { Brand } from "../../types/database.types";
-import { BrandResponse } from "./brand-response.dto";
+import { Brand } from "../../types/database.types.js";
+import { BrandResponse } from "./brand-response.dto.js";
 
 export const toBrandResponse = (
   brand: Pick<Brand, "id" | "name" | "logo_url">

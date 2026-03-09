@@ -1,12 +1,12 @@
 import express, { Router } from "express";
-import { VehicleModelController } from "../controller/vehicle-model.controller";
-import { authorizationMiddlware } from "../middleware/auth.middleware";
+import { VehicleModelController } from "../controller/vehicle-model.controller.js";
+import { authorizationMiddlware } from "../middleware/auth.middleware.js";
 import {
   vehicleModelRequest,
   createVehicleModelValidator,
   vehicleModelParamsExistValidator,
   updateVehicleModelValidator,
-} from "../middleware/validation/vehicle-model.validator";
+} from "../middleware/validation/vehicle-model.validator.js";
 
 const router: Router = express.Router();
 const vehicleModelControllerInstance = new VehicleModelController();

@@ -1,4 +1,4 @@
-import { VehicleType } from "../../types/database.types";
+import { VehicleType } from "../../types/database.types.js";
 
 export interface CreateVehicleModelRequest {
   /** Name of the vehicle model */

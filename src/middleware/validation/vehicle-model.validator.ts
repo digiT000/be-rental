@@ -42,7 +42,7 @@ export const createVehicleModelValidator: ValidationChain[] = [
 // ...existing code...
 
 export const updateVehicleModelValidator: ValidationChain[] = [
-  body().custom((value, { req }) => {
+  body().custom((_, { req }) => {
     const inputKeys = Object.keys(req.body);
     const invalidKeys = inputKeys.filter(
       (key) => !ALLOWED_BODY_KEYS_UPDATE.includes(key)
