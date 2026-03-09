@@ -1,5 +1,7 @@
 import { Generated, Insertable, Selectable, Updateable } from "kysely";
 
+export type VehicleType = "car" | "motorcycle";
+
 // Database table interfaces
 export interface Database {
   users: UsersTable;
@@ -42,8 +44,15 @@ export interface BrandsTable {
 
 export interface VehicleModelsTable {
   id: Generated<string>;
-  name: string;
   brand_id: string;
+  name: string;
+  price_per_day: number;
+  year: number;
+  image_url: string;
+  type: VehicleType;
+  features: Record<string, unknown> | null;
+  is_deleted: boolean;
+  deleted_at: Generated<Date> | null;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
