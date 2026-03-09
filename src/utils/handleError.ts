@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 
 interface AppErrorType extends Error {
   statusCode?: number;
@@ -17,56 +17,86 @@ export default function handleError(
   res: Response,
   _next: NextFunction
 ): Response {
-  const statusCode = 'statusCode' in error ? error.statusCode || 500 : 500;
-  let message = error.message || 'Internal Server Error';
+  const statusCode = "statusCode" in error ? error.statusCode || 500 : 500;
+  let message = error.message || "Internal Server Error";
   let customStatusCode = statusCode;
 
   // Handle PostgreSQL duplicate key error
-  if ('code' in error && error.code === '23505') {
-    const match = 'detail' in error ? error.detail?.match(/Key \(([^)]+)\)/) : null;
-    const field = match ? match[1] : 'field';
+  if ("code" in error && error.code === "23505") {
+    const match =
+      "detail" in error ? error.detail?.match(/Key \(([^)]+)\)/) : null;
+    const field = match ? match[1] : "field";
 
     customStatusCode = 409;
-    message = `${field.charAt(0).toUpperCase() + field.slice(1)} already exists`;
+    message = `${
+      field.charAt(0).toUpperCase() + field.slice(1)
+    } already exists`;
 
     return res.status(customStatusCode).json({
       success: false,
       message: message,
-      error: 'Duplicate entry',
+      error: "Duplicate entry",
     });
   }
 
   // Handle JWT errors
-  if (error.name === 'JsonWebTokenError') {
+  if (error.name === "JsonWebTokenError") {
     customStatusCode = 401;
-    message = 'Invalid token. Please login again';
+    message = "Invalid token. Please login again";
 
     return res.status(customStatusCode).json({
       success: false,
       message: message,
-      error: 'Authentication failed',
+      error: "Authentication failed",
     });
   }
 
-  if (error.name === 'TokenExpiredError') {
+  if (error.name === "TokenExpiredError") {
     customStatusCode = 401;
-    message = 'Token expired. Please login again';
+    message = "Token expired. Please login again";
 
     return res.status(customStatusCode).json({
       success: false,
       message: message,
-      error: 'Token expired',
+      error: "Token expired",
     });
   }
 
-  if (error.name === 'NotBeforeError') {
+  if (error.name === "NotBeforeError") {
     customStatusCode = 401;
-    message = 'Token not yet valid';
+    message = "Token not yet valid";
 
     return res.status(customStatusCode).json({
       success: false,
       message: message,
-      error: 'Invalid token',
+      error: "Invalid token",
+    });
+  }
+
+  // Handle Foreign Key Constraint errors
+  if (error.message.includes("vehicle_models_brand_id_fkey")) {
+    return res.status(404).json({
+      success: false,
+      message: "Brand not found",
+      error: "Foreign key constraint violation",
+    });
+  }
+
+  // Handle Not Found errors
+  if (error.message === "Brand not found") {
+    return res.status(404).json({
+      success: false,
+      message: "Brand not found",
+      error: "Not found",
+    });
+  }
+
+  // Handle no result found (executeTakeFirstOrThrow)
+  if (error.message === "no result") {
+    return res.status(404).json({
+      success: false,
+      message: "Resource not found",
+      error: "Not found",
     });
   }
 

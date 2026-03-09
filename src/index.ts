@@ -8,6 +8,7 @@ import { pool } from "./config/database.js";
 import authRouter from "./router/auth.router.js";
 import brandRouter from "./router/brand.router.js";
 import handleError from "./utils/handleError.js";
+import vehicleModelRouter from "./router/vehicle-model.router.js";
 
 const app: Application = express();
 
@@ -34,6 +35,7 @@ pool
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/brand", brandRouter);
+app.use("/api/vehicle-model", vehicleModelRouter);
 
 // Error Handler
 app.use(handleError);
