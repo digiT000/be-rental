@@ -21,6 +21,21 @@ interface VehicleModelUpdateInput {
   features?: Record<string, any> | null;
 }
 
+// ...existing code...
+
+export interface VehicleModelWithBrand {
+  id: string;
+  brand_id: string;
+  name: string;
+  price_per_day: number;
+  year: number;
+  image_url: string;
+  type: VehicleType;
+  features: Record<string, unknown> | null;
+  brand_name: string;
+  brand_logo_url: string;
+}
+
 export class VehicleModels {
   async create(
     vehicle: VehicleModelInput
@@ -68,27 +83,29 @@ export class VehicleModels {
   > {
     const data: VehicleModelUpdateInput = {};
 
-    if (vehicle.brandId) {
+    if (vehicle?.brandId) {
       data.brandId = vehicle.brandId;
     }
-    if (vehicle.name) {
+    if (vehicle?.name) {
       data.name = vehicle.name;
     }
-    if (vehicle.pricePerDay) {
+    if (vehicle?.pricePerDay) {
       data.pricePerDay = vehicle.pricePerDay;
     }
-    if (vehicle.year) {
+    if (vehicle?.year) {
       data.year = vehicle.year;
     }
-    if (vehicle.imageUrl) {
+    if (vehicle?.imageUrl) {
       data.imageUrl = vehicle.imageUrl;
     }
-    if (vehicle.type) {
+    if (vehicle?.type) {
       data.type = vehicle.type;
     }
-    if (vehicle.features) {
+    if (vehicle?.features) {
       data.features = vehicle.features;
     }
+
+    console.log("Updating vehicle model with data:", { id });
 
     const result = await db
       .updateTable("vehicle_models")
@@ -122,13 +139,26 @@ export class VehicleModels {
       .executeTakeFirstOrThrow();
   }
 
-  async findById(id: string) {
+  async findById(id: string): Promise<VehicleModelWithBrand> {
     return await db
       .selectFrom("vehicle_models")
       .innerJoin("brands", "vehicle_models.brand_id", "brands.id")
-      .where("id", "=", id)
-      .where("is_deleted", "=", false)
-      .where("deleted_at", "is", null)
+      .select([
+        "vehicle_models.id",
+        "vehicle_models.brand_id",
+        "vehicle_models.name",
+        "vehicle_models.price_per_day",
+        "vehicle_models.year",
+        "vehicle_models.image_url",
+        "vehicle_models.type",
+        "vehicle_models.features",
+        "brands.id as brand_id",
+        "brands.name as brand_name",
+        "brands.logo_url as brand_logo_url",
+      ])
+      .where("vehicle_models.id", "=", id)
+      .where("vehicle_models.is_deleted", "=", false)
+      .where("vehicle_models.deleted_at", "is", null)
       .executeTakeFirstOrThrow();
   }
 }

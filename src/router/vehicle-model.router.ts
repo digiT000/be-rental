@@ -5,6 +5,7 @@ import {
   vehicleModelRequest,
   createVehicleModelValidator,
   vehicleModelParamsExistValidator,
+  updateVehicleModelValidator,
 } from "../middleware/validation/vehicle-model.validator";
 
 const router: Router = express.Router();
@@ -26,6 +27,27 @@ router.get(
   vehicleModelParamsExistValidator,
   vehicleModelRequest,
   vehicleModelControllerInstance.getVehicleById.bind(
+    vehicleModelControllerInstance
+  )
+);
+
+router.put(
+  "/:id",
+  authorizationMiddlware("admin"),
+  vehicleModelParamsExistValidator,
+  updateVehicleModelValidator,
+  vehicleModelRequest,
+  vehicleModelControllerInstance.updateVehicle.bind(
+    vehicleModelControllerInstance
+  )
+);
+
+router.put(
+  "/delete/:id",
+  authorizationMiddlware("admin"),
+  vehicleModelParamsExistValidator,
+  vehicleModelRequest,
+  vehicleModelControllerInstance.deleteVehicle.bind(
     vehicleModelControllerInstance
   )
 );

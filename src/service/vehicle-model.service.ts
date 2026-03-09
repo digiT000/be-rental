@@ -3,6 +3,9 @@ import {
   CreateVehicleModelRequest,
   VehicleResponse,
   toVehicleModelResponse,
+  UpdateVehicleModelRequest,
+  VehicleDetailResponse,
+  toVehicleDetailResponse,
 } from "../dto/vehicleModel/index.js";
 import { VehicleModels } from "../models/vehicle-model.js";
 
@@ -24,9 +27,26 @@ export class VehicleModelService {
     return toVehicleModelResponse(result);
   }
 
-  async getVehicleById(id: string) {
+  async updateVehicle(id: string, vehicle: UpdateVehicleModelRequest) {
+    if (vehicle?.imageUrl) {
+      vehicle.imageUrl = `${env.BASE_CDN_URL_IMAGE}/${vehicle.imageUrl}`;
+    }
+
+    const result = await this.vehicleModel.update(id, vehicle);
+    return toVehicleModelResponse(result);
+  }
+
+  async getVehicleById(id: string): Promise<VehicleDetailResponse> {
     const result = await this.vehicleModel.findById(id);
-    console.log({ result });
-    return result;
+    return toVehicleDetailResponse(result);
+  }
+
+  async deleteVehicle(id: string) {
+    await this.vehicleModel.delete(id);
+
+    return {
+      id: id,
+      message: "Vehicle model deleted successfully",
+    };
   }
 }
