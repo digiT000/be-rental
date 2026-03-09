@@ -1,4 +1,4 @@
-import { BrandResponse } from "../brand";
+import { BrandResponse } from "../brand/index.js";
 
 export interface VehicleDetailResponse {
   /** Unique identifier for the vehicle model */

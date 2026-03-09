@@ -1,7 +1,7 @@
 import type { VehicleModelWithBrand } from "../../models/vehicle-model.js";
-import { VehicleModel } from "../../types/database.types";
-import { VehicleResponse } from "./vehicle-response.dto";
-import { VehicleDetailResponse } from "./vehicle-detaill-response.dto";
+import { VehicleModel } from "../../types/database.types.js";
+import { VehicleResponse } from "./vehicle-response.dto.js";
+import { VehicleDetailResponse } from "./vehicle-detaill-response.dto.js";
 
 export const toVehicleModelResponse = (
   vehicleModel: Omit<

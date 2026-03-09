@@ -1,5 +1,5 @@
-import { db } from "../config/database";
-import { VehicleModel, VehicleType } from "../types/database.types";
+import { db } from "../config/database.js";
+import { VehicleModel, VehicleType } from "../types/database.types.js";
 
 interface VehicleModelInput {
   brandId: string;
